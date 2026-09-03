@@ -49,7 +49,11 @@ class ReportController extends Controller
             ->select('categories.name as category', DB::raw('SUM(converted_amount) as total'))
             ->groupBy('categories.name')
             ->orderByDesc('total')
-            ->get();
+            ->get()
+            ->map(fn ($item) => [
+                'category' => $item->category,
+                'total' => (float) $item->total,   // <- tambahkan cast ini
+            ]);
 
         return response()->json($data);
     }
